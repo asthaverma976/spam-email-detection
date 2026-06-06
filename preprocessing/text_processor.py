@@ -4,19 +4,29 @@ Handles all text cleaning and preprocessing for the spam detection pipeline.
 Uses NLTK for tokenization, stopwords, and stemming.
 """
 
+import os
 import re
 import string
 
 import nltk
 
-# ─── Ensure NLTK data is downloaded ──────────────────────────────────────────
-_NLTK_RESOURCES = ["punkt", "punkt_tab", "stopwords"]
+# ─── Use local NLTK data bundled with the project ────────────────────────────
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_NLTK_DATA_DIR = os.path.join(_PROJECT_ROOT, "nltk_data")
 
+if os.path.exists(_NLTK_DATA_DIR):
+    nltk.data.path.insert(0, _NLTK_DATA_DIR)
+
+# Fallback: download if not found locally
+_NLTK_RESOURCES = ["punkt", "punkt_tab", "stopwords"]
 for _resource in _NLTK_RESOURCES:
     try:
         nltk.data.find(f"tokenizers/{_resource}" if "punkt" in _resource else f"corpora/{_resource}")
     except LookupError:
-        nltk.download(_resource, quiet=True)
+        try:
+            nltk.download(_resource, quiet=True)
+        except Exception:
+            pass
 
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
