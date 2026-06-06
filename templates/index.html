@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI-powered Spam Email Detection — classify any email as Spam or Ham instantly using Machine Learning." />
+  <title>Spam Email Detector — AI Classifier</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
+</head>
+<body>
+
+  <!-- Floating particles -->
+  <div class="particles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="container">
+
+    <!-- ── Header ────────────────────────────────────────────────────── -->
+    <header class="header">
+      <div class="header__icon">🛡️</div>
+      <h1 class="header__title">Spam Email Detector</h1>
+      <p class="header__subtitle">AI-powered classification using Machine Learning &amp; NLP</p>
+    </header>
+
+    <!-- ── Main Card ─────────────────────────────────────────────────── -->
+    <main class="card" id="main-card">
+      <form action="/classify" method="POST" id="email-form">
+
+        <!-- Textarea -->
+        <div class="form__group">
+          <label class="form__label" for="email-input">Paste or type an email</label>
+          <textarea
+            class="form__textarea"
+            id="email-input"
+            name="email_text"
+            placeholder="e.g. Congratulations! You've won a free iPhone. Click the link to claim your prize now..."
+            required
+          ></textarea>
+        </div>
+
+        <!-- Sample buttons -->
+        <div class="divider">Try a sample</div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn--spam" id="btn-sample-spam" onclick="fillSample('spam')">
+            🚫&ensp;Sample Spam
+          </button>
+          <button type="button" class="btn btn--ham" id="btn-sample-ham" onclick="fillSample('ham')">
+            ✅&ensp;Sample Ham
+          </button>
+        </div>
+
+        <!-- Submit / Clear -->
+        <div class="form__actions">
+          <button type="submit" class="btn btn--primary btn--full" id="btn-classify">
+            <span class="btn__text">Classify Email</span>
+            <div class="spinner"></div>
+          </button>
+          <button type="button" class="btn btn--outline" id="btn-clear" onclick="clearForm()">
+            Clear
+          </button>
+        </div>
+
+      </form>
+    </main>
+
+    <!-- ── Footer ────────────────────────────────────────────────────── -->
+    <footer class="footer">
+      Built with <span style="color: var(--spam-400);">♥</span> using Flask, scikit-learn &amp; NLTK
+    </footer>
+
+  </div>
+
+  <script>
+    // ── Sample emails ──────────────────────────────────────────────────
+    const SAMPLES = {
+      spam: "URGENT! You've been selected as the winner of our $500,000 international lottery! " +
+            "Click the link below immediately to claim your prize. " +
+            "Send your full name, address, and bank details to process the payment. " +
+            "This is a limited-time offer — act NOW before it expires!",
+      ham:  "Hi team, just a reminder that we have our weekly standup meeting tomorrow at 10 AM. " +
+            "Please prepare your status updates and any blockers you'd like to discuss. " +
+            "I've also shared the agenda in the shared drive. See you all in the conference room!"
+    };
+
+    function fillSample(type) {
+      const textarea = document.getElementById('email-input');
+      textarea.value = SAMPLES[type];
+      textarea.focus();
+      textarea.style.borderColor = type === 'spam'
+        ? 'rgba(239, 68, 68, 0.4)'
+        : 'rgba(34, 197, 94, 0.4)';
+      setTimeout(() => { textarea.style.borderColor = ''; }, 1500);
+    }
+
+    function clearForm() {
+      document.getElementById('email-input').value = '';
+      document.getElementById('email-input').focus();
+    }
+
+    // ── Loading state on submit ────────────────────────────────────────
+    document.getElementById('email-form').addEventListener('submit', function () {
+      const btn = document.getElementById('btn-classify');
+      btn.classList.add('btn--loading');
+      btn.disabled = true;
+    });
+  </script>
+
+</body>
+</html>

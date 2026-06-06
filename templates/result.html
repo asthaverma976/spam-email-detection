@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Classification result — your email has been analyzed by the AI spam detector." />
+  <title>Result — {{ prediction | upper }} | Spam Email Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
+</head>
+<body>
+
+  <!-- Floating particles -->
+  <div class="particles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="container">
+
+    <!-- ── Header ────────────────────────────────────────────────────── -->
+    <header class="header">
+      <div class="header__icon">🛡️</div>
+      <h1 class="header__title">Classification Result</h1>
+      <p class="header__subtitle">Your email has been analyzed</p>
+    </header>
+
+    <!-- ── Result Card ───────────────────────────────────────────────── -->
+    <main class="card">
+      <div class="result">
+
+        <!-- Icon -->
+        {% if prediction == 'spam' %}
+        <div class="result__icon result__icon--spam">🚫</div>
+        <h2 class="result__label result__label--spam">SPAM</h2>
+        <p class="result__sublabel">This email looks like spam — be cautious!</p>
+        {% else %}
+        <div class="result__icon result__icon--ham">✅</div>
+        <h2 class="result__label result__label--ham">HAM</h2>
+        <p class="result__sublabel">This email appears to be legitimate.</p>
+        {% endif %}
+
+        <!-- Confidence Bar -->
+        <div class="confidence">
+          <div class="confidence__header">
+            <span class="confidence__title">Confidence</span>
+            <span class="confidence__value {% if prediction == 'spam' %}confidence__value--spam{% else %}confidence__value--ham{% endif %}">
+              {{ confidence }}%
+            </span>
+          </div>
+          <div class="confidence__track">
+            <div
+              class="confidence__fill {% if prediction == 'spam' %}confidence__fill--spam{% else %}confidence__fill--ham{% endif %}"
+              style="--fill-width: {{ confidence }}%;"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Original Email -->
+        <div class="detail">
+          <h3 class="detail__title">Original Email</h3>
+          <div class="detail__content" id="detail-original">{{ email_text }}</div>
+        </div>
+
+        <!-- Preprocessed Text -->
+        <div class="detail">
+          <h3 class="detail__title">Preprocessed Text</h3>
+          <div class="detail__content" id="detail-processed">{{ preprocessed_text }}</div>
+        </div>
+
+        <!-- Back button -->
+        <div class="result__actions">
+          <a href="/" class="btn btn--primary btn--full" id="btn-back">
+            ← Classify Another Email
+          </a>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ── Footer ────────────────────────────────────────────────────── -->
+    <footer class="footer">
+      Built with <span style="color: var(--spam-400);">♥</span> using Flask, scikit-learn &amp; NLTK
+    </footer>
+
+  </div>
+
+</body>
+</html>
